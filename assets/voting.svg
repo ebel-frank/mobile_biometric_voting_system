@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+    <!-- Background square -->
+    <rect width="64" height="64" rx="8" ry="8" fill="#e0e0e0"/>
+
+    <!-- Face outline -->
+    <circle cx="32" cy="24" r="10" stroke="#333" stroke-width="2" fill="none"/>
+    <circle cx="28" cy="22" r="1.5" fill="#333"/>
+    <circle cx="36" cy="22" r="1.5" fill="#333"/>
+    <path d="M28 28 Q32 32 36 28" stroke="#333" stroke-width="2" fill="none"/>
+
+    <!-- Check mark -->
+    <path d="M20 44 L28 52 L44 36" stroke="#4caf50" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "468700331763",
+    "project_id": "mobile-biometric-voting-system",
+    "storage_bucket": "mobile-biometric-voting-system.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:468700331763:android:29ad1cba4677ccc6a24186",
+        "android_client_info": {
+          "package_name": "com.horizons.mbvs"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDKNj55FDZf4jzGLQS8kqOw6JUnnMs1YDc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
