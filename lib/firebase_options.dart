@@ -54,6 +54,7 @@ class DefaultFirebaseOptions {
     appId: '1:468700331763:android:29ad1cba4677ccc6a24186',
     messagingSenderId: '468700331763',
     projectId: 'mobile-biometric-voting-system',
+    databaseURL: 'https://mobile-biometric-voting-system-default-rtdb.firebaseio.com',
     storageBucket: 'mobile-biometric-voting-system.appspot.com',
   );
 
@@ -62,6 +63,7 @@ class DefaultFirebaseOptions {
     appId: '1:468700331763:ios:c18f4a0479c64b59a24186',
     messagingSenderId: '468700331763',
     projectId: 'mobile-biometric-voting-system',
+    databaseURL: 'https://mobile-biometric-voting-system-default-rtdb.firebaseio.com',
     storageBucket: 'mobile-biometric-voting-system.appspot.com',
     iosBundleId: 'com.horizons.mbvs',
   );

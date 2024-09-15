@@ -47,8 +47,8 @@ class FaceRegistrationScreenState extends State<FaceRegistrationScreen> {
   static List<String> listState = [
     "Put your face on frame",
     "Slowly Blink your eyes",
-    "Slowly Turn head left",
     "Slowly Turn head right",
+    "Slowly Turn head left",
     "Finally, Smile...",
     "OK",
   ];
@@ -95,37 +95,16 @@ class FaceRegistrationScreenState extends State<FaceRegistrationScreen> {
     }
   }
 
-  Future<bool> onShot() async {
-    if (faceDetected == null) {
-      showMessage(context, 'Error', 'No face detected!');
-      return false;
-    } else {
-      await Future.delayed(const Duration(milliseconds: 500));
-      // await _cameraService.cameraController?.stopImageStream();
-      await Future.delayed(const Duration(milliseconds: 200));
-      XFile? file = await _cameraService.takePicture();
-      imagePath = file?.path;
-
-      setState(() {
-        pictureTaken = true;
-      });
-
-      return true;
-    }
-  }
-
   _changeStateDetection(int state) {
-    // widget.onStateChange(state);
     setState(() {
       stepIndex = state;
     });
   }
 
   _saveDetectedFace(int index, CameraImage image, Face face) async {
-    if (index==0) {
+    if (index == 0) {
       XFile? file = await _cameraService.takePicture();
       firstFace = file!.path;
-
     }
     faces[index] = face;
   }
@@ -233,9 +212,10 @@ class FaceRegistrationScreenState extends State<FaceRegistrationScreen> {
                       setState(() {
                         _initializing = true;
                       });
-                      for (int i=0; i<4; i++) {
+                      for (int i = 0; i < 4; i++) {
                         _mlService.setCurrentPrediction(image, faces[i], i);
                       }
+                      await _cameraService.cameraController?.stopImageStream();
                       if (mounted) {
                         Navigator.of(context).pop(firstFace);
                       }
@@ -248,6 +228,7 @@ class FaceRegistrationScreenState extends State<FaceRegistrationScreen> {
             debugPrint('face is null');
             setState(() {
               faceDetected = null;
+              stepIndex = 0;
             });
           }
 
@@ -258,10 +239,6 @@ class FaceRegistrationScreenState extends State<FaceRegistrationScreen> {
         }
       }
     });
-  }
-
-  _onBackPressed() {
-    Navigator.of(context).pop();
   }
 
   @override
@@ -340,7 +317,9 @@ class FaceRegistrationScreenState extends State<FaceRegistrationScreen> {
             body,
             CameraHeader(
               "Facial Verification",
-              onBackPressed: _onBackPressed,
+              onBackPressed: () {
+                Navigator.pop(context);
+              },
             ),
           ],
         ),

@@ -21,19 +21,23 @@ class _VerificationScreenState extends State<VerificationScreen> {
   bool loading = true;
 
   void _verifyFace() async {
-    final savedFaceEmbeddings = provider.getFaceEmbeddings();
-    final isSameFace = await _mlService.predict(savedFaceEmbeddings);
-    setState(() {
-      success = isSameFace;
-      loading = false;
-    });
+    // final savedFaceEmbeddings = provider.getFaceEmbeddings();
+    final userId = provider.getUser().userId;
+    // provider.saveFaceEmbedding(_mlService.predictedData);
+    final isSameFace = await _mlService.predict(userId);
+    if (mounted) {
+      setState(() {
+        success = isSameFace;
+        loading = false;
+      });
+    }
   }
 
   @override
   void initState() {
     super.initState();
     provider = context.read<DataProvider>();
-    Future.delayed(const Duration(seconds: 3), () {
+    Future.delayed(const Duration(seconds: 5), () {
       _verifyFace();
     });
   }
@@ -43,7 +47,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
     final size = MediaQuery.sizeOf(context);
     return WillPopScope(
         onWillPop: () async {
-          return true;
+          return false;
         },
         child: Scaffold(
           body: SafeArea(
@@ -75,9 +79,11 @@ class _VerificationScreenState extends State<VerificationScreen> {
                       child: InkWell(
                         onTap: () {
                           if (success) {
+                            Navigator.pop(context);
                             // Navigator.pushNamed(context, '/verify_vote', arguments: candidates);
                           } else {
-                            Navigator.pop(context);
+                            _verifyFace();
+                            // Navigator.pop(context);
                           }
                         },
                         child: Ink(

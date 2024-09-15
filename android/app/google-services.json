@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "468700331763",
+    "firebase_url": "https://mobile-biometric-voting-system-default-rtdb.firebaseio.com",
     "project_id": "mobile-biometric-voting-system",
     "storage_bucket": "mobile-biometric-voting-system.appspot.com"
   },

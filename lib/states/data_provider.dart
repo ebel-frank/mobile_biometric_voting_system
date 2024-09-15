@@ -23,7 +23,7 @@ class DataProvider with ChangeNotifier {
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
     try {
-// Query the credential collection to find a matching nin and password
+      // Query the credential collection to find a matching nin and password
       QuerySnapshot credSnapshot = await firestore
           .collection("credential")
           .where("nin", isEqualTo: nin)
@@ -43,9 +43,11 @@ class DataProvider with ChangeNotifier {
             .collection("face_embeddings")
             .doc(credentialId)
             .get();
-        final embedding = embedDoc.data() as Map<int, List<double>>;
+        final embedding = (embedDoc.data() as Map).map((key, value) {
+          return MapEntry(int.parse(key), List<double>.from(value));
+        });
         _saveUserData(user);
-        _saveFaceEmbedding(embedding);
+        saveFaceEmbedding(embedding);
       } else {
         errorMsg = "Invalid NIN or password.";
       }
@@ -108,6 +110,7 @@ class DataProvider with ChangeNotifier {
               'users_image/${credRef.id}.png');
           await _saveEmbeddingsToFirestore(credRef.id, embeddings);
 
+          data["userId"] = credRef.id;    // save userId in user data
           final DocumentReference userRef =
               firestore.collection("users").doc(credRef.id);
           transaction.set(userRef, data);
@@ -116,7 +119,7 @@ class DataProvider with ChangeNotifier {
           incrementRegisteredVoters();
         });
         _saveUserData(data);
-        _saveFaceEmbedding(embeddings);
+        saveFaceEmbedding(embeddings);
         errorMsg = null;
       }
     } catch (e) {
@@ -132,7 +135,7 @@ class DataProvider with ChangeNotifier {
     Hive.box('cache').put('user', user);
   }
 
-  void _saveFaceEmbedding(Map<int, List<double>> embeddings) async {
+  void saveFaceEmbedding(Map<int, List<double>> embeddings) async {
     Hive.box('cache').put('face_embedding', embeddings);
   }
 

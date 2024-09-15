@@ -1,5 +1,6 @@
+import 'dart:convert';
 import 'dart:io';
-import 'dart:math';
+import 'package:http/http.dart' as http;
 import 'dart:typed_data';
 import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
@@ -15,6 +16,7 @@ class MLService {
   double threshold = 0.5;
 
   Map<int, List<double>> _predictedData = {};
+
   Map<int, List<double>> get predictedData => _predictedData;
 
   Future initialize() async {
@@ -33,8 +35,9 @@ class MLService {
       } else if (Platform.isIOS) {
         delegate = GpuDelegate(
           options: GpuDelegateOptions(
-              allowPrecisionLoss: true,
-              /*waitType: TFLGpuDelegateWaitType.active*/),
+            allowPrecisionLoss:
+                true, /*waitType: TFLGpuDelegateWaitType.active*/
+          ),
         );
       }
       var interpreterOptions = InterpreterOptions()..addDelegate(delegate);
@@ -61,23 +64,42 @@ class MLService {
     _predictedData[index] = List.from(output);
   }
 
-  Future<bool> predict(Map embedding) async {
-      double currDist = 0.0;
-      List result = [];
-      for (int i=0; i < 4; i++) {
-        currDist = _euclideanDistance(embedding[i], predictedData[i]);
-        // if (currDist <= threshold && currDist < minDist) {
-        //   minDist = currDist;
-        //   predictedResult = u;
-        // }
-        result.add(currDist);
-      }
-      final mean = result.reduce((a, b) => a + b) / result.length;
-      if (mean <= threshold) {
-        return true;
+  Future<bool> predict(String userId) async {
+    // const String apiUrl = 'http://192.168.1.1/api/verify_face';
+
+    final Map<String, List<double>> encodedPredictedData =
+        predictedData.map((key, value) => MapEntry(key.toString(), value));
+    // final String predictedDataJson = jsonEncode(encodedPredictedData);
+
+    final body = jsonEncode({
+      'uid': userId,
+      'predictedData': encodedPredictedData,
+    });
+
+    final Uri url =
+        Uri.parse('https://item-finder-api.vercel.app/api/verify_face');
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: body,
+      );
+      if (response.statusCode == 200) {
+        // Decode the JSON response
+        final Map<String, dynamic> responseData = jsonDecode(response.body);
+
+        return responseData['prediction'];
       } else {
+        // Handle non-successful response
         return false;
       }
+    } catch (e) {
+      // debugPrint('An error occurred: $e');
+      return false;
+    }
   }
 
   List _preProcess(CameraImage image, Face faceDetected) {
@@ -94,8 +116,8 @@ class MLService {
     double y = faceDetected.boundingBox.top - 10.0;
     double w = faceDetected.boundingBox.width + 10.0;
     double h = faceDetected.boundingBox.height + 10.0;
-    return imglib.copyCrop(
-        convertedImage, x: x.round(), y: y.round(),width: w.round(), height:  h.round());
+    return imglib.copyCrop(convertedImage,
+        x: x.round(), y: y.round(), width: w.round(), height: h.round());
   }
 
   imglib.Image _convertCameraImage(CameraImage image) {
@@ -118,16 +140,6 @@ class MLService {
       }
     }
     return convertedBytes.buffer.asFloat32List();
-  }
-
-  double _euclideanDistance(List? e1, List? e2) {
-    if (e1 == null || e2 == null) throw Exception("Null argument");
-
-    double sum = 0.0;
-    for (int i = 0; i < e1.length; i++) {
-      sum += pow((e1[i] - e2[i]), 2);
-    }
-    return sqrt(sum);
   }
 
   void setPredictedData(value) {

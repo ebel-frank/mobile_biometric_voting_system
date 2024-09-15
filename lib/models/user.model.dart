@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 class User {
+  String userId;
   String name;
   String gender;
   int dob;
@@ -11,6 +12,7 @@ class User {
   String nin;
 
   User({
+    required this.userId,
     required this.name,
     required this.imageUrl,
     required this.gender,
@@ -23,6 +25,7 @@ class User {
 
   static User fromMap(Map user) {
     return User(
+      userId: user['userId'],
       name: user['name'],
       imageUrl: user['imageUrl'] ?? '',
       gender: user['gender'],
@@ -36,6 +39,7 @@ class User {
 
   toMap() {
     return {
+      'userId': userId,
       'name': name,
       'imageUrl': imageUrl,
       'gender': gender,
