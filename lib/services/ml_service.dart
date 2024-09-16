@@ -9,7 +9,6 @@ import 'package:tflite_flutter/tflite_flutter.dart';
 import 'package:image/image.dart' as imglib;
 
 import '../common/utils.dart';
-import '../models/user.model.dart';
 
 class MLService {
   Interpreter? _interpreter;

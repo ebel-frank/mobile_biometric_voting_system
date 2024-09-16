@@ -50,11 +50,18 @@ class _VotingPageState extends State<VotingPage> {
         'name': 'Gbadebo Rhodes Vivour',
         'gender': 'Male'
       },
+      {
+        'imageUrl':
+            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcScDUPqgGgiFLYTJuSR8LU05BkBD4x2DfkEtQ&s',
+        'party': 'PDP',
+        'name': 'Nyesom Wike',
+        'gender': 'Male'
+      },
     ],
     "Senatorial Elections": [
       {
         'imageUrl':
-            'https://thestreetjournal.org/wp-content/uploads/2024/05/Edo-Deputy-governor-Philip-Shaibu-768x680.webp',
+            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTfZsrmgMlqzguKLLKNKXPgTdUBotQG7mxew&s',
         'party': 'PDP',
         'name': 'Phlip Aduda',
         'gender': 'Male'
