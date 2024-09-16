@@ -79,6 +79,7 @@ class DataProvider with ChangeNotifier {
       "dob": dob,
       "regDate": regDate,
       "isVerified": false,
+      "hasVoted": false,
       "nin": nin
     };
     final Map<String, dynamic> credential = {
@@ -110,7 +111,7 @@ class DataProvider with ChangeNotifier {
               'users_image/${credRef.id}.png');
           await _saveEmbeddingsToFirestore(credRef.id, embeddings);
 
-          data["userId"] = credRef.id;    // save userId in user data
+          data["userId"] = credRef.id; // save userId in user data
           final DocumentReference userRef =
               firestore.collection("users").doc(credRef.id);
           transaction.set(userRef, data);
@@ -165,6 +166,45 @@ class DataProvider with ChangeNotifier {
 
     // Write the new value
     await ref.set(newValue);
+  }
+
+  Future<String?> submitVote(List candidates) async {
+    String? errorMsg;
+    final DatabaseReference dbRef = FirebaseDatabase.instance.ref();
+    try {
+      for (int i = 0; i < candidates.length; i++) {
+        DatabaseReference candidateRef =
+            dbRef.child('election/${candidates[i]['category']}/candidates');
+        // Get the current list of candidates
+        final DataSnapshot snapshot = await candidateRef.get();
+        if (snapshot.exists) {
+          for (var candidate in snapshot.children) {
+            Map candidateData = candidate.value as Map;
+            if (candidateData['name'] == candidates[i]['candidate']['party']) {
+              // Update the votes value for the matching candidate
+              await candidate.ref.update({'votes': candidateData['votes'] + 1});
+              debugPrint('Votes updated successfully');
+              break;
+            }
+          }
+        } else {
+          errorMsg = "Please check internet connection and try again";
+        }
+      }
+
+      final user = getUser();
+      DocumentReference userDocRef =
+          FirebaseFirestore.instance.collection("users").doc(user.userId);
+      // Update the "isVoted" field to true
+      await userDocRef.update({
+        "hasVoted": true,
+      });
+      user.hasVoted = true;
+      _saveUserData(user.toMap());
+    } catch (e) {
+      errorMsg = e.toString();
+    }
+    return errorMsg;
   }
 
   _saveEmbeddingsToFirestore(

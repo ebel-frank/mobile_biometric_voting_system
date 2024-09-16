@@ -7,7 +7,9 @@ import '../../locator.dart';
 import '../../services/ml_service.dart';
 
 class VerificationScreen extends StatefulWidget {
-  const VerificationScreen({super.key});
+  const VerificationScreen({super.key, required this.candidates});
+
+  final List candidates;
 
   @override
   State<VerificationScreen> createState() => _VerificationScreenState();
@@ -77,13 +79,33 @@ class _VerificationScreenState extends State<VerificationScreen> {
                     Padding(
                       padding: const EdgeInsets.all(16),
                       child: InkWell(
-                        onTap: () {
+                        onTap: () async {
                           if (success) {
-                            Navigator.pop(context);
-                            // Navigator.pushNamed(context, '/verify_vote', arguments: candidates);
+                            setState(() {
+                              loading = true;
+                            });
+                            final errorMsg = await context
+                                .read<DataProvider>()
+                                .submitVote(widget.candidates);
+                            setState(() {
+                              loading = false;
+                            });
+                            if (errorMsg != null && context.mounted) {
+                              showDialog(context: context, builder: (context)=>AlertDialog(
+                                title: const Text("Error!"),
+                                content: Text(errorMsg),
+                                actions: [
+                                  TextButton(onPressed: () {
+                                    Navigator.pop(context);
+                                  }, child: const Text("OK"))
+                                ],
+                              ));
+                            } else if (context.mounted) {
+                              Navigator.pushNamedAndRemoveUntil(
+                                  context, '/home', (route) => false);
+                            }
                           } else {
-                            _verifyFace();
-                            // Navigator.pop(context);
+                            Navigator.pop(context);
                           }
                         },
                         child: Ink(

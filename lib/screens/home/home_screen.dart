@@ -32,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
     });
     FirebaseDatabase.instance.ref().child('election').onValue.listen((event) {
       setState(() {
-        elections = event.snapshot.value as List;
+        elections = (event.snapshot.value as Map).values.toList();
       });
     });
   }
@@ -180,13 +180,16 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               InkWell(
                 onTap: () {
-                  Navigator.pushNamed(context, '/voting');
+                  if(!user.hasVoted) {
+                    Navigator.pushNamed(context, '/voting');
+                  }
                 },
+                borderRadius: BorderRadius.circular(100),
                 child: Ink(
                   width: double.infinity,
                   padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(
-                    color: CustomColor.green,
+                    color: user.hasVoted ? Colors.grey : CustomColor.green,
                     borderRadius: BorderRadius.circular(100),
                   ),
                   child: const Text(

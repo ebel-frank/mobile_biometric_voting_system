@@ -16,7 +16,6 @@ class VoteVerificationScreen extends StatefulWidget {
 }
 
 class _VoteVerificationScreenState extends State<VoteVerificationScreen> {
-
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -55,7 +54,7 @@ class _VoteVerificationScreenState extends State<VoteVerificationScreen> {
                               borderRadius: BorderRadius.circular(10),
                               image: DecorationImage(
                                 image: CachedNetworkImageProvider(
-                                    (item['candidate'] as Map)['partyLogo']
+                                    (item['candidate'] as Map)['imageUrl']
                                         .toString()),
                                 fit: BoxFit.cover,
                               ),
@@ -86,12 +85,14 @@ class _VoteVerificationScreenState extends State<VoteVerificationScreen> {
               const SizedBox(height: 16),
               GestureDetector(
                 onTap: () async {
-                  final face = await Navigator.pushNamed(context, '/faceDetector');
-                  if (face!=null && face is String && context.mounted) {
+                  final face =
+                      await Navigator.pushNamed(context, '/faceDetector');
+                  if (face != null && face is String && context.mounted) {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const VerificationScreen()));
+                            builder: (context) => VerificationScreen(
+                                candidates: widget.candidates)));
                   }
                 },
                 child: SizedBox(

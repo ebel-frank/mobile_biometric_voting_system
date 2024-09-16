@@ -14,8 +14,6 @@ class _VotingScreenState extends State<VotingScreen> {
     'Presidential Elections',
     'Gubernatorial Elections',
     'Senatorial Elections',
-    'Local Government Elections',
-    'State House of Assembly Elections',
   ];
 
   final selections = {};
@@ -30,9 +28,9 @@ class _VotingScreenState extends State<VotingScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: const Text(
+            const Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Text(
                 'Select vote category',
                 style: TextStyle(fontSize: 16),
               ),

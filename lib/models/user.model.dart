@@ -7,6 +7,7 @@ class User {
   int dob;
   int regDate;
   bool isVerified;
+  bool hasVoted;
   String state;
   String imageUrl;
   String nin;
@@ -19,6 +20,7 @@ class User {
     required this.dob,
     required this.regDate,
     required this.isVerified,
+    required this.hasVoted,
     required this.state,
     required this.nin,
   });
@@ -32,6 +34,7 @@ class User {
       dob: user['dob'],
       regDate: user['regDate'],
       isVerified: user['isVerified'],
+      hasVoted: user['hasVoted'],
       state: user['state'],
       nin: user['nin'],
     );
@@ -44,8 +47,11 @@ class User {
       'imageUrl': imageUrl,
       'gender': gender,
       'dob': dob,
-      'reg_date': regDate,
-      'is_verified': isVerified,
+      'nin': nin,
+      'regDate': regDate,
+      'isVerified': isVerified,
+      'hasVoted': hasVoted,
+      'state': state
     };
   }
 }
